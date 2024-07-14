@@ -38,6 +38,7 @@ export const Shelf: FC<IShelfProps> = ({ id, name, items }) => {
         <saveShelfNameFetcher.Form
           method='post'
           className='flex'
+          reloadDocument
         >
           <input
             type='text'

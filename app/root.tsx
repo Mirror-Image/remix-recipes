@@ -1,4 +1,12 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
+import {
+  Link,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useRouteError,
+} from '@remix-run/react'
 import styles from '~/tailwind.css?url'
 import { LinksFunction, MetaFunction } from '@remix-run/node'
 import { FC, ReactNode } from 'react'
@@ -23,7 +31,7 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         <Meta />
         <Links />
       </head>
-      <body className='md:flex md:h-screen'>
+      <body className='md:flex md:h-screen bg-background'>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -40,5 +48,37 @@ const App = () => (
     </div>
   </>
 )
+
+export const ErrorBoundary = () => {
+  const error = useRouteError()
+
+  return (
+    <html lang='en'>
+      <head>
+        <title>Whoops!</title>
+        <meta charSet='utf-8' />
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1'
+        />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <div className='p-4'>
+          <h1 className='text-2xl pb-3'>Whoops!</h1>
+          <p>You&apos;re seeing this page because an unexpected error occurred.</p>
+          {error instanceof Error && <p className='my-4 font-bold'>{error.message}</p>}
+          <Link
+            to='/'
+            className='text-primary'
+          >
+            Take me Home
+          </Link>
+        </div>
+      </body>
+    </html>
+  )
+}
 
 export default App

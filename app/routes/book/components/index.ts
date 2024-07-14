@@ -1,3 +1,3 @@
 export { SearchShelf } from './SearchShelf'
 export { CreateShelf } from './CreateShelf'
-export { ShelfItem } from './ShelfItem'
+export { Shelves } from './Shelves'

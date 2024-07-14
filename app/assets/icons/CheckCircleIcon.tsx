@@ -1,4 +1,6 @@
-export const CheckCircleIcon = ({ large }: { large?: boolean }) => (
+import { FC } from 'react'
+
+export const CheckCircleIcon: FC<{ large?: boolean }> = ({ large }) => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     fill='none'

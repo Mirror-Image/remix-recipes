@@ -1,12 +1,13 @@
 import classNames from 'classnames'
 import { SearchIcon } from '~/assets/icons'
 import { Form, useNavigation, useSearchParams } from '@remix-run/react'
+import { QUERY_PARAM_KEY } from '~/constants/general'
 
 export const SearchShelf = () => {
   const [searchParams] = useSearchParams()
   const navigation = useNavigation()
 
-  const isSearching = navigation.formData?.has('q')
+  const isSearching = navigation.formData?.has(QUERY_PARAM_KEY)
 
   return (
     <Form
@@ -26,8 +27,8 @@ export const SearchShelf = () => {
       </button>
       <input
         type='text'
-        name='q'
-        defaultValue={searchParams.get('q') ?? ''}
+        name={QUERY_PARAM_KEY}
+        defaultValue={searchParams.get(QUERY_PARAM_KEY) ?? ''}
         autoComplete='off'
         placeholder='Search Shelves...'
         className='w-full py-3 px-2 outline-none'
