@@ -11,10 +11,10 @@ import {
   CREATE_SHELF_ACTION_KEY,
   DELETE_SHELF_ACTION_KEY,
   SAVE_SHELF_NAME_ACTION_KEY,
-  SHELF_ID_KEY,
-  SHELF_NAME_KEY,
 } from '~/routes/book/constants'
 import { ACTION_KEY, QUERY_PARAM_KEY } from '~/constants/general'
+import { deleteShelfSchema, saveShelfSchema } from '~/routes/book/formSchema'
+import { validateForm } from '~/utils'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -32,35 +32,20 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
     case CREATE_SHELF_ACTION_KEY:
       return createShelf({ name: 'New Shelf' })
     case DELETE_SHELF_ACTION_KEY: {
-      const shelfId = formData.get(SHELF_ID_KEY)
-
-      if (typeof shelfId !== 'string') {
-        return json({ error: { shelfId: 'Shelf ID must be a string' } })
-      }
-      return deleteShelf(shelfId)
+      return validateForm(
+        formData,
+        deleteShelfSchema,
+        data => deleteShelf(data.shelfId),
+        errors => json({ errors }),
+      )
     }
     case SAVE_SHELF_NAME_ACTION_KEY: {
-      const shelfId = formData.get(SHELF_ID_KEY)
-      const shelfName = formData.get(SHELF_NAME_KEY)
-      const errors: Record<string, string> = {}
-
-      if (typeof shelfId === 'string' && typeof shelfName === 'string' && shelfName) {
-        return saveShelfName(shelfId, shelfName)
-      }
-
-      if (typeof shelfName !== 'string') {
-        errors[SHELF_NAME_KEY] = 'Shelf name must be a string'
-      }
-
-      if (!shelfName) {
-        errors[SHELF_NAME_KEY] = 'Shelf cannot be blank'
-      }
-
-      if (typeof shelfId !== 'string') {
-        errors[SHELF_ID_KEY] = 'Shelf ID must be a string'
-      }
-
-      return json({ errors })
+      return validateForm(
+        formData,
+        saveShelfSchema,
+        data => saveShelfName(data.shelfId, data.shelfName),
+        errors => json({ errors }),
+      )
     }
     default:
       return null

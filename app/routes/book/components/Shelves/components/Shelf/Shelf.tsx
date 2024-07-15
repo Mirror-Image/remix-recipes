@@ -25,6 +25,8 @@ export const Shelf: FC<IShelfProps> = ({ id, name, items }) => {
     deleteShelfFetcher.formData?.get(ACTION_KEY) === DELETE_SHELF_ACTION_KEY &&
     deleteShelfFetcher.formData?.get(SHELF_ID_KEY) === id
 
+  const shelfNameError = saveShelfNameFetcher.data?.errors?.shelfName
+
   return (
     <li
       className={classNames(
@@ -38,19 +40,24 @@ export const Shelf: FC<IShelfProps> = ({ id, name, items }) => {
         <saveShelfNameFetcher.Form
           method='post'
           className='flex'
-          reloadDocument
         >
-          <input
-            type='text'
-            defaultValue={name}
-            name={SHELF_NAME_KEY}
-            placeholder='Shelf Name'
-            autoComplete='off'
-            className={classNames(
-              'text-2xl font-extrabold mb-2 w-full outline-none',
-              'border-b-2 border-b-background focus:border-b-primary',
-            )}
-          />
+          <div className='w-full mb-2'>
+            <input
+              type='text'
+              defaultValue={name}
+              name={SHELF_NAME_KEY}
+              placeholder='Shelf Name'
+              autoComplete='off'
+              className={classNames(
+                'text-2xl font-extrabold mb-2 w-full outline-none',
+                'border-b-2 border-b-background focus:border-b-primary',
+                {
+                  'border-b-red-600': shelfNameError,
+                },
+              )}
+            />
+            <span className='text-red-600 text-xs'>{shelfNameError}</span>
+          </div>
           <button
             name={ACTION_KEY}
             value={SAVE_SHELF_NAME_ACTION_KEY}
