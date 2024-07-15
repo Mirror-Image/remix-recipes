@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { useFetcher } from '@remix-run/react'
-import { Button } from '~/components/ui'
+import { Button, ErrorMessage } from '~/components/ui'
 import { FC } from 'react'
 import {
   DELETE_SHELF_ACTION_KEY,
@@ -27,7 +27,7 @@ export const Shelf: FC<IShelfProps> = ({ id, name, items }) => {
 
   const shelfNameError = saveShelfNameFetcher.data?.errors?.shelfName
 
-  return (
+  return isDeletingShelf ? null : (
     <li
       className={classNames(
         'border-2 border-primary rounded-md p-4 mb:h-fit',
@@ -56,7 +56,7 @@ export const Shelf: FC<IShelfProps> = ({ id, name, items }) => {
                 },
               )}
             />
-            <span className='text-red-600 text-xs'>{shelfNameError}</span>
+            <ErrorMessage className='pb-2'>{shelfNameError}</ErrorMessage>
           </div>
           <button
             name={ACTION_KEY}
@@ -91,14 +91,14 @@ export const Shelf: FC<IShelfProps> = ({ id, name, items }) => {
           value={id}
           name={SHELF_ID_KEY}
         />
+        <ErrorMessage className='pb-2'>{deleteShelfFetcher.data?.errors?.shelfId}</ErrorMessage>
         <Button
           variant='delete'
           name={ACTION_KEY}
           value={DELETE_SHELF_ACTION_KEY}
           className='w-full'
-          isLoading={isDeletingShelf}
         >
-          {`${isDeletingShelf ? 'Deleting' : 'Delete'} Shelf`}
+          Delete Shelf
         </Button>
       </deleteShelfFetcher.Form>
     </li>

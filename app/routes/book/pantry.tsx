@@ -15,6 +15,7 @@ import {
 import { ACTION_KEY, QUERY_PARAM_KEY } from '~/constants/general'
 import { deleteShelfSchema, saveShelfSchema } from '~/routes/book/formSchema'
 import { validateForm } from '~/utils'
+import { STATUS_CODES_ENUM } from '~/types/general'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -36,7 +37,7 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
         formData,
         deleteShelfSchema,
         data => deleteShelf(data.shelfId),
-        errors => json({ errors }),
+        errors => json({ errors }, { status: STATUS_CODES_ENUM.BAD_REQUEST }),
       )
     }
     case SAVE_SHELF_NAME_ACTION_KEY: {
@@ -44,7 +45,7 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
         formData,
         saveShelfSchema,
         data => saveShelfName(data.shelfId, data.shelfName),
-        errors => json({ errors }),
+        errors => json({ errors }, { status: STATUS_CODES_ENUM.BAD_REQUEST }),
       )
     }
     default:
