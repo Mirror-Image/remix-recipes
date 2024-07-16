@@ -1,6 +1,6 @@
 import db from '~/db.server'
-import { Prisma } from '@prisma/client'
 import { SORT_PARAMS_ENUM } from '~/types/general'
+import { handleDelete } from '~/utils/model'
 
 export const getAllShelves = (query: string | null) => {
   return db.pantryShelf.findMany({
@@ -29,24 +29,14 @@ export const createShelf = (data: { name: string }) => {
   })
 }
 
-export const deleteShelf = async (shelfId: string) => {
-  try {
-    const deleted = await db.pantryShelf.delete({
+export const deleteShelf = (shelfId: string) => {
+  return handleDelete(() =>
+    db.pantryShelf.delete({
       where: {
         id: shelfId,
       },
-    })
-
-    return deleted
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2025') {
-        return error.message
-      }
-    }
-
-    throw error
-  }
+    }),
+  )
 }
 
 export const saveShelfName = (shelfId: string, shelfName: string) => {

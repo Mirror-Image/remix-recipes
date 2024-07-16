@@ -9,13 +9,20 @@ import { ActionFunction, ActionFunctionArgs, LoaderFunctionArgs } from '@remix-r
 import { CreateShelf, SearchShelf, Shelves } from './components'
 import {
   CREATE_SHELF_ACTION_KEY,
+  CREATE_SHELF_ITEM_ACTION_KEY,
   DELETE_SHELF_ACTION_KEY,
+  DELETE_SHELF_ITEM_ACTION_KEY,
   SAVE_SHELF_NAME_ACTION_KEY,
 } from '~/routes/book/constants'
 import { ACTION_KEY, QUERY_PARAM_KEY } from '~/constants/general'
-import { deleteShelfSchema, saveShelfSchema } from '~/routes/book/formSchema'
+import {
+  createShelfItemSchema,
+  deleteShelfItemSchema,
+  deleteShelfSchema,
+  saveShelfSchema,
+} from '~/routes/book/formSchema'
 import { validateForm } from '~/utils'
-import { STATUS_CODES_ENUM } from '~/types/general'
+import { createShelfItem, deleteShelfItem } from '~/models/pantry-item.server'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -32,22 +39,18 @@ export const action: ActionFunction = async ({ request }: ActionFunctionArgs) =>
   switch (formData.get(ACTION_KEY)) {
     case CREATE_SHELF_ACTION_KEY:
       return createShelf({ name: 'New Shelf' })
-    case DELETE_SHELF_ACTION_KEY: {
-      return validateForm(
-        formData,
-        deleteShelfSchema,
-        data => deleteShelf(data.shelfId),
-        errors => json({ errors }, { status: STATUS_CODES_ENUM.BAD_REQUEST }),
+    case DELETE_SHELF_ACTION_KEY:
+      return validateForm(formData, deleteShelfSchema, data => deleteShelf(data.shelfId))
+    case SAVE_SHELF_NAME_ACTION_KEY:
+      return validateForm(formData, saveShelfSchema, data =>
+        saveShelfName(data.shelfId, data.shelfName),
       )
-    }
-    case SAVE_SHELF_NAME_ACTION_KEY: {
-      return validateForm(
-        formData,
-        saveShelfSchema,
-        data => saveShelfName(data.shelfId, data.shelfName),
-        errors => json({ errors }, { status: STATUS_CODES_ENUM.BAD_REQUEST }),
+    case CREATE_SHELF_ITEM_ACTION_KEY:
+      return validateForm(formData, createShelfItemSchema, data =>
+        createShelfItem(data.shelfId, data.itemName),
       )
-    }
+    case DELETE_SHELF_ITEM_ACTION_KEY:
+      return validateForm(formData, deleteShelfItemSchema, data => deleteShelfItem(data.itemId))
     default:
       return null
   }

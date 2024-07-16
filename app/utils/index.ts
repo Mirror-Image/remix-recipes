@@ -1,1 +1,1 @@
-export { validateForm } from './validateForm'
+export { validateForm } from './validation'

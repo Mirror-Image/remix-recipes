@@ -1,11 +1,12 @@
 import { TFieldErrors } from '~/types/general'
 import { Schema } from 'zod'
+import { handleValidationError } from './handleValidationError'
 
 export const validateForm = <T>(
   formData: FormData,
   zodSchema: Schema<T>,
   successFn: (data: T) => unknown,
-  errorFn: (error: TFieldErrors) => unknown,
+  errorFn: (error: TFieldErrors) => unknown = handleValidationError,
 ) => {
   const result = zodSchema.safeParse(Object.fromEntries(formData))
 

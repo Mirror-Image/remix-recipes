@@ -5,10 +5,9 @@ interface IErrorMessageProps extends HTMLAttributes<HTMLParagraphElement> {
   className?: string
 }
 
-export const ErrorMessage: FC<IErrorMessageProps> = ({ className, ...props }) =>
-  props.children ? (
-    <p
-      {...props}
-      className={classNames('text-red-600 text-xs', className)}
-    />
-  ) : null
+export const ErrorMessage: FC<IErrorMessageProps> = ({ className, ...props }) => (
+  <p
+    {...props}
+    className={classNames('text-red-600 text-xs h-4', className)}
+  />
+)
