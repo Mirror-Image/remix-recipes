@@ -8,9 +8,10 @@ import { TrashIcon } from '~/assets/icons'
 interface IShelfItemProps {
   id: string
   name: string
+  isOptimistic?: boolean
 }
 
-export const ShelfItem: FC<IShelfItemProps> = ({ id, name }) => {
+export const ShelfItem: FC<IShelfItemProps> = ({ id, name, isOptimistic }) => {
   const deleteShelfItemFetcher = useFetcher()
 
   return (
@@ -18,14 +19,16 @@ export const ShelfItem: FC<IShelfItemProps> = ({ id, name }) => {
       <deleteShelfItemFetcher.Form method='post'>
         <div className='flex'>
           <p className='w-full'>{name}</p>
-          <button
-            name={ACTION_KEY}
-            value={DELETE_SHELF_ITEM_ACTION_KEY}
-          >
-            <TrashIcon />
-          </button>
+          {!isOptimistic && (
+            <button
+              name={ACTION_KEY}
+              value={DELETE_SHELF_ITEM_ACTION_KEY}
+            >
+              <TrashIcon />
+            </button>
+          )}
           <input
-            type='hidden'
+            type="hidden"
             name={SHELF_ITEM_ID_KEY}
             value={id}
           />

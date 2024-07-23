@@ -8,20 +8,38 @@ import { ACTION_KEY } from '~/constants/general'
 import { SaveIcon } from '~/assets/icons'
 import { ErrorMessage } from '~/components/ui'
 import { useFetcher } from '@remix-run/react'
-import { FC } from 'react'
+import { FC, useRef } from 'react'
 
 interface ICreateShelfItemProps {
   id: string
+  addItem: (name: string) => void
 }
 
-export const CreateShelfItem: FC<ICreateShelfItemProps> = ({ id }) => {
+export const CreateShelfItem: FC<ICreateShelfItemProps> = ({ id, addItem }) => {
   const createShelfItemFetcher = useFetcher()
   const creteShelfItemError = createShelfItemFetcher.data?.errors?.itemName
+
+  const createItemFormRef = useRef<HTMLFormElement | null>(null)
 
   return (
     <createShelfItemFetcher.Form
       method='post'
       className='mb-2'
+      ref={createItemFormRef}
+      onSubmit={(event) => {
+        event.preventDefault()
+
+        const target = event.target as HTMLFormElement
+        const itemNameInput = target.elements.namedItem(SHELF_ITEM_NAME_KEY) as HTMLInputElement
+
+        createShelfItemFetcher.submit({
+          itemName: itemNameInput.value,
+          shelfId: id,
+          _action: CREATE_SHELF_ITEM_ACTION_KEY
+        }, { method: 'post' })
+        addItem(itemNameInput.value)
+        createItemFormRef.current?.reset()
+      }}
     >
       <div className='flex mb-0.5'>
         <input
