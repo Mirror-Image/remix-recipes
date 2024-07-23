@@ -10,9 +10,13 @@ interface IRenderItem {
 
 interface IUseOptimisticItems {
   savedItems: IRenderItem[]
+  createShelfItemState: 'idle' | 'submitting' | 'loading'
 }
 
-export const useOptimisticItems = ({ savedItems }: IUseOptimisticItems) => {
+export const useOptimisticItems = ({
+  savedItems,
+  createShelfItemState,
+}: IUseOptimisticItems) => {
   const [optimisticItems, setOptimisticItems] = useState<IRenderItem[]>([])
 
   const renderedItems = [...optimisticItems, ...savedItems]
@@ -24,8 +28,10 @@ export const useOptimisticItems = ({ savedItems }: IUseOptimisticItems) => {
   })
 
   useServerLayoutEffect(() => {
-    setOptimisticItems([])
-  }, [savedItems])
+    if (createShelfItemState === 'idle') {
+      setOptimisticItems([])
+    }
+  }, [createShelfItemState])
 
   const addItem = (name: string) => {
     setOptimisticItems((items) => [

@@ -14,7 +14,9 @@ interface IShelfItemProps {
 export const ShelfItem: FC<IShelfItemProps> = ({ id, name, isOptimistic }) => {
   const deleteShelfItemFetcher = useFetcher()
 
-  return (
+  const isDeletingItem = !!deleteShelfItemFetcher.formData
+
+  return isDeletingItem ? null : (
     <li className='mb-1'>
       <deleteShelfItemFetcher.Form method='post'>
         <div className='flex'>
